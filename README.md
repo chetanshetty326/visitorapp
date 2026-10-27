@@ -162,48 +162,9 @@ If an external mock URL is unreachable or not yet configured, the app automatica
 - Android Studio / VS Code with Flutter extensions
 - Android device or emulator with Camera support
 
-### Run the App
-```bash
-# 1. Fetch dependencies
-flutter pub get
 
-# 2. Run static analyzer (verify 0 issues)
-flutter analyze
-
-# 3. Run automated tests (all 10 tests pass)
-flutter test
-
-# 4. Launch the application
-flutter run
 ```
 
-### Build Android APK
-```bash
-flutter build apk --release
-```
-The output APK will be generated at:
-`build/app/outputs/flutter-apk/app-release.apk`
 
----
 
-## 🧪 Automated Tests Suite
-
-Run tests via:
-```bash
-flutter test
-```
-
-Included tests:
-- **`visitor_usecases_test.dart`**:
-  - Check-in allowed when status is `Registered`.
-  - Disallow check-in when visitor is already `Checked In`.
-  - Disallow check-in when visitor has already `Checked Out`.
-  - Disallow check-out before checking in.
-  - Check-out allowed when status is `Checked In`.
-  - Local-date dashboard statistics calculation verification.
-- **`validators_test.dart`**:
-  - Required field validator.
-  - 10-digit numeric mobile number validator.
-  - RFC standard email format validator.
-- **`widget_test.dart`**:
-  - StatusChip widget rendering and badge styling test.
+.

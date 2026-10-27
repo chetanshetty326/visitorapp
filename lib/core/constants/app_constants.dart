@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = 'Sumadhura Visitor App';
+  static const String appName = 'Visitor App';
 
   // Visitor Statuses
   static const String statusRegistered = 'Registered';

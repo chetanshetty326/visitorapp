@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../di/injection.dart';
 import '../../domain/entities/visitor.dart';
+import '../../domain/usecases/get_visitor_by_id_usecase.dart';
 import '../bloc/visitor_bloc.dart';
 import '../bloc/visitor_state.dart';
 import 'visitor_details_screen.dart';
@@ -47,25 +49,39 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       return;
     }
 
-    final scannedId = rawValue.trim();
+    await _processVisitorId(rawValue.trim());
+  }
 
+  Future<void> _processVisitorId(String scannedId) async {
     setState(() {
       _isProcessingCode = true;
     });
 
-    // Lookup visitor from current BLoC state
+    // 1. First check in current loaded visitors in BLoC state
     final state = context.read<VisitorBloc>().state;
     Visitor? foundVisitor;
 
     if (state is VisitorLoadedState) {
-      final matches = state.allVisitors.where((v) => v.id.toLowerCase() == scannedId.toLowerCase());
+      final matches = state.allVisitors.where(
+        (v) => v.id.toLowerCase() == scannedId.toLowerCase(),
+      );
       if (matches.isNotEmpty) {
         foundVisitor = matches.first;
       }
     }
 
+    // 2. If not found in local memory, retrieve visitor details from REST API
+    if (foundVisitor == null) {
+      try {
+        foundVisitor = await sl<GetVisitorByIdUseCase>()(scannedId);
+      } catch (_) {
+        foundVisitor = null;
+      }
+    }
+
+    if (!mounted) return;
+
     if (foundVisitor != null) {
-      if (!mounted) return;
       await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => VisitorDetailsScreen(initialVisitor: foundVisitor!),
@@ -73,18 +89,70 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       );
     } else {
       _showFeedbackSnackBar(
-        'Visitor with ID "$scannedId" does not exist.',
+        'Visitor with ID "$scannedId" does not exist in API records.',
         isError: true,
       );
     }
 
     // Cooldown before allowing next scan
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 1500));
     if (mounted) {
       setState(() {
         _isProcessingCode = false;
       });
     }
+  }
+
+  void _showManualEntryDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.keyboard_rounded, color: AppTheme.primary),
+            SizedBox(width: 8),
+            Text('Enter Visitor ID', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Test scanner lookup without a physical camera by entering any visitor ID (e.g. VIS001, 1, 4):',
+              style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: const InputDecoration(
+                hintText: 'e.g. VIS001 or 4',
+                prefixIcon: Icon(Icons.badge_outlined),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final id = controller.text.trim();
+              Navigator.of(ctx).pop();
+              if (id.isNotEmpty) {
+                _processVisitorId(id);
+              }
+            },
+            child: const Text('Lookup Visitor'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showFeedbackSnackBar(String message, {bool isError = false}) {
@@ -117,6 +185,12 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
         foregroundColor: Colors.white,
         title: const Text('Scan Visitor QR Code', style: TextStyle(color: Colors.white)),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.keyboard_alt_outlined),
+            color: Colors.white,
+            tooltip: 'Enter ID Manually (Test Mode)',
+            onPressed: _showManualEntryDialog,
+          ),
           IconButton(
             icon: Icon(_isTorchOn ? Icons.flash_on_rounded : Icons.flash_off_rounded),
             color: Colors.white,

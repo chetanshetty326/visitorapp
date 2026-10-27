@@ -250,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             size: 15, color: AppTheme.textSecondary),
                         SizedBox(width: 6),
                         Text(
-                          'Authorized Personnel Access Only',
+                          'visitor Personnel Access Only',
                           style: TextStyle(
                             fontSize: 12,
                             color: AppTheme.textSecondary,
