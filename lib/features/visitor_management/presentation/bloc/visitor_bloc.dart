@@ -131,7 +131,7 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
       final current = state as VisitorLoadedState;
       emit(current.copyWith(isSubmitting: true));
       try {
-        await registerVisitorUseCase(event.visitor);
+        final registered = await registerVisitorUseCase(event.visitor);
         // Reload all visitors to update list and dashboard stats immediately
         final updatedList = await getVisitorsUseCase();
         final stats = getDashboardStatsUseCase(updatedList);
@@ -150,8 +150,9 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
           selectedProject: current.selectedProject,
           selectedStatus: current.selectedStatus,
           isSubmitting: false,
-          userFeedback: 'Visitor registered successfully!',
+          userFeedback: 'Visitor registered successfully! QR pass generated.',
           isErrorFeedback: false,
+          lastRegisteredVisitor: registered,
         ));
       } catch (e) {
         emit(current.copyWith(

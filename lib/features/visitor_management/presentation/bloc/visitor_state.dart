@@ -23,6 +23,7 @@ class VisitorLoadedState extends VisitorState {
   final bool isSubmitting;
   final String? userFeedback;
   final bool isErrorFeedback;
+  final Visitor? lastRegisteredVisitor;
 
   const VisitorLoadedState({
     required this.allVisitors,
@@ -34,6 +35,7 @@ class VisitorLoadedState extends VisitorState {
     this.isSubmitting = false,
     this.userFeedback,
     this.isErrorFeedback = false,
+    this.lastRegisteredVisitor,
   });
 
   VisitorLoadedState copyWith({
@@ -48,6 +50,8 @@ class VisitorLoadedState extends VisitorState {
     bool? isSubmitting,
     String? userFeedback,
     bool? isErrorFeedback,
+    Visitor? lastRegisteredVisitor,
+    bool clearLastRegistered = false,
   }) {
     return VisitorLoadedState(
       allVisitors: allVisitors ?? this.allVisitors,
@@ -61,6 +65,9 @@ class VisitorLoadedState extends VisitorState {
       isSubmitting: isSubmitting ?? this.isSubmitting,
       userFeedback: userFeedback,
       isErrorFeedback: isErrorFeedback ?? false,
+      lastRegisteredVisitor: clearLastRegistered
+          ? null
+          : (lastRegisteredVisitor ?? this.lastRegisteredVisitor),
     );
   }
 
@@ -75,6 +82,7 @@ class VisitorLoadedState extends VisitorState {
         isSubmitting,
         userFeedback,
         isErrorFeedback,
+        lastRegisteredVisitor,
       ];
 }
 

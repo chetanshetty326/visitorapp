@@ -120,6 +120,13 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
                 // Bonus Feature: Filter Chips for Projects & Status
                 _buildFilterChips(context, state),
 
+                if (state.isSubmitting)
+                  const LinearProgressIndicator(
+                    minHeight: 2.5,
+                    color: AppTheme.primary,
+                    backgroundColor: Colors.transparent,
+                  ),
+
                 // Visitor List / Empty State
                 Expanded(
                   child: RefreshIndicator(

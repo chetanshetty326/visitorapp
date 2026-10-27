@@ -10,6 +10,7 @@ import '../bloc/visitor_state.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_dropdown.dart';
 import '../widgets/custom_text_field.dart';
+import 'visitor_details_screen.dart';
 
 class VisitorFormScreen extends StatefulWidget {
   final Visitor? visitorToEdit;
@@ -87,8 +88,6 @@ class _VisitorFormScreenState extends State<VisitorFormScreen> {
       );
       context.read<VisitorBloc>().add(RegisterVisitorEvent(newVisitor));
     }
-
-    Navigator.of(context).pop();
   }
 
   @override
@@ -98,7 +97,32 @@ class _VisitorFormScreenState extends State<VisitorFormScreen> {
         title: Text(_isEditing ? 'Edit Visitor' : 'Register New Visitor'),
       ),
       body: SafeArea(
-        child: BlocBuilder<VisitorBloc, VisitorState>(
+        child: BlocConsumer<VisitorBloc, VisitorState>(
+          listener: (context, state) {
+            if (state is VisitorLoadedState) {
+              if (state.isErrorFeedback && state.userFeedback != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.userFeedback!),
+                    backgroundColor: AppTheme.error,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              } else if (_isEditing && state.userFeedback != null) {
+                Navigator.of(context).pop();
+              } else if (!_isEditing && state.lastRegisteredVisitor != null) {
+                // Navigate immediately to VisitorDetailsScreen displaying the generated QR code!
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => VisitorDetailsScreen(
+                      initialVisitor: state.lastRegisteredVisitor!,
+                      isNewRegistration: true,
+                    ),
+                  ),
+                );
+              }
+            }
+          },
           builder: (context, state) {
             final isSubmitting =
                 state is VisitorLoadedState ? state.isSubmitting : false;

@@ -59,6 +59,8 @@ class VisitorCard extends StatelessWidget {
                       children: [
                         Text(
                           visitor.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -87,15 +89,19 @@ class VisitorCard extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Icon(Icons.location_city_rounded,
+                            const Icon(Icons.location_city_rounded,
                                 size: 14, color: AppTheme.textSecondary),
                             const SizedBox(width: 3),
-                            Text(
-                              visitor.project,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppTheme.textSecondary,
-                                fontWeight: FontWeight.w500,
+                            Expanded(
+                              child: Text(
+                                visitor.project,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],

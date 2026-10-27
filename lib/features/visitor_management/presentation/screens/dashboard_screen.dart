@@ -12,6 +12,8 @@ import '../widgets/dashboard_stat_card.dart';
 import '../widgets/empty_state_view.dart';
 import '../widgets/loading_view.dart';
 import '../widgets/visitor_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../auth/presentation/screens/login_screen.dart';
 import 'visitor_details_screen.dart';
 import 'visitor_form_screen.dart';
 
@@ -65,6 +67,29 @@ class DashboardScreen extends StatelessWidget {
               context.read<VisitorBloc>().add(const LoadVisitorsEvent(isRefresh: true));
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: AppTheme.error),
+            tooltip: 'Log Out',
+            onPressed: () async {
+              final confirm = await ConfirmDialog.show(
+                context,
+                title: 'Sign Out',
+                message: 'Do you want to sign out of the Security & Front Desk portal?',
+                confirmLabel: 'Sign Out',
+                confirmColor: AppTheme.error,
+              );
+              if (confirm == true && context.mounted) {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('is_logged_in', false);
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    (route) => false,
+                  );
+                }
+              }
+            },
+          ),
         ],
       ),
       body: BlocConsumer<VisitorBloc, VisitorState>(
@@ -111,6 +136,14 @@ class DashboardScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (state.isSubmitting) ...[
+                      const LinearProgressIndicator(
+                        minHeight: 2.5,
+                        color: AppTheme.primary,
+                        backgroundColor: Colors.transparent,
+                      ),
+                      const SizedBox(height: 10),
+                    ],
                     // Date banner
                     Row(
                       children: [

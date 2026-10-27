@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -15,8 +16,13 @@ import 'visitor_form_screen.dart';
 
 class VisitorDetailsScreen extends StatelessWidget {
   final Visitor initialVisitor;
+  final bool isNewRegistration;
 
-  const VisitorDetailsScreen({super.key, required this.initialVisitor});
+  const VisitorDetailsScreen({
+    super.key,
+    required this.initialVisitor,
+    this.isNewRegistration = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +78,37 @@ class VisitorDetailsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (isNewRegistration) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.statusCheckedInBg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppTheme.statusCheckedIn.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.check_circle_rounded,
+                            color: AppTheme.statusCheckedIn, size: 22),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Registration Confirmed! Digital visitor pass & QR code generated below.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppTheme.statusCheckedIn,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
                 // Top QR Code Card
                 Container(
                   padding: const EdgeInsets.all(20),
@@ -125,9 +162,25 @@ class VisitorDetailsScreen extends StatelessWidget {
                               letterSpacing: 0.5,
                             ),
                           ),
+                          const SizedBox(width: 4),
+                          IconButton(
+                            icon: const Icon(Icons.copy_rounded, size: 16, color: AppTheme.primary),
+                            tooltip: 'Copy ID',
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: visitor.id));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Visitor ID copied to clipboard!'),
+                                  duration: Duration(seconds: 2),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 6),
                       StatusChip(status: visitor.status, fontSize: 13),
                     ],
                   ),
