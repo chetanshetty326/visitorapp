@@ -17,6 +17,9 @@ import '../presentation/bloc/visitor_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> initDependencyInjection() async {
+  // Initialize persisted API settings
+  await ApiConstants.init();
+
   // External
   final dio = Dio(
     BaseOptions(
@@ -27,6 +30,15 @@ Future<void> initDependencyInjection() async {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
+    ),
+  );
+  dio.interceptors.add(
+    LogInterceptor(
+      requestHeader: false,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
     ),
   );
   sl.registerLazySingleton<Dio>(() => dio);

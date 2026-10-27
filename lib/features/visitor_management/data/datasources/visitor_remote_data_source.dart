@@ -67,9 +67,7 @@ class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
 
   VisitorRemoteDataSourceImpl({required this.dio});
 
-  bool get _isDefaultMockUrl =>
-      ApiConstants.baseUrl.contains('mockapi.io/api/v1') &&
-      !ApiConstants.baseUrl.contains('6');
+  bool get _isDefaultMockUrl => ApiConstants.baseUrl == ApiConstants.defaultBaseUrl;
 
   @override
   Future<List<VisitorModel>> getVisitors() async {
