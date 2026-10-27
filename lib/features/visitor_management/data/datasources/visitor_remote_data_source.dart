@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/visitor_model.dart';
@@ -19,11 +21,42 @@ abstract class VisitorRemoteDataSource {
 
 class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
   final Dio dio;
+  final SharedPreferences? sharedPreferences;
+
+  static const String _cachedVisitorsKey = 'CACHED_VISITORS_LIST';
 
   // In-memory fallback cache to ensure the app never crashes when offline
   static final List<VisitorModel> _fallbackStorage = [];
 
-  VisitorRemoteDataSourceImpl({required this.dio});
+  VisitorRemoteDataSourceImpl({
+    required this.dio,
+    this.sharedPreferences,
+  }) {
+    _loadFromCache();
+  }
+
+  void _loadFromCache() {
+    if (_fallbackStorage.isEmpty && sharedPreferences != null) {
+      final jsonStr = sharedPreferences!.getString(_cachedVisitorsKey);
+      if (jsonStr != null && jsonStr.isNotEmpty) {
+        try {
+          final decoded = jsonDecode(jsonStr) as List;
+          _fallbackStorage.addAll(
+            decoded.map((e) => VisitorModel.fromJson(e as Map<String, dynamic>)),
+          );
+        } catch (_) {}
+      }
+    }
+  }
+
+  Future<void> _saveToCache(List<VisitorModel> list) async {
+    if (sharedPreferences != null) {
+      try {
+        final jsonList = list.map((v) => v.toJson()).toList();
+        await sharedPreferences!.setString(_cachedVisitorsKey, jsonEncode(jsonList));
+      } catch (_) {}
+    }
+  }
 
   String get _endpointUrl => '${ApiConstants.baseUrl}${ApiConstants.visitorsEndpoint}';
 
@@ -36,14 +69,16 @@ class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
             .map((e) => VisitorModel.fromJson(e as Map<String, dynamic>))
             .toList();
 
-        // Update fallback cache
+        // Update fallback & disk cache
         _fallbackStorage.clear();
         _fallbackStorage.addAll(list);
+        await _saveToCache(_fallbackStorage);
 
         return list;
       }
       throw ServerException(message: 'Invalid response format from server');
     } on DioException catch (e) {
+      _loadFromCache();
       if (_fallbackStorage.isNotEmpty) {
         return List<VisitorModel>.from(_fallbackStorage);
       }
@@ -81,6 +116,7 @@ class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final created = VisitorModel.fromJson(response.data as Map<String, dynamic>);
         _fallbackStorage.insert(0, created);
+        await _saveToCache(_fallbackStorage);
         return created;
       }
       throw ServerException(message: 'Failed to create visitor on server');
@@ -100,6 +136,7 @@ class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
         final updated = VisitorModel.fromJson(response.data as Map<String, dynamic>);
         final idx = _fallbackStorage.indexWhere((v) => v.id == visitor.id);
         if (idx != -1) _fallbackStorage[idx] = updated;
+        await _saveToCache(_fallbackStorage);
         return updated;
       }
       throw ServerException(message: 'Failed to update visitor on server');
@@ -114,6 +151,7 @@ class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
       final response = await dio.delete('$_endpointUrl/$id');
       if (response.statusCode == 200 || response.statusCode == 204) {
         _fallbackStorage.removeWhere((v) => v.id == id);
+        await _saveToCache(_fallbackStorage);
         return;
       }
       throw ServerException(message: 'Failed to delete visitor from server');
@@ -157,6 +195,7 @@ class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
         final updated = VisitorModel.fromJson(response.data as Map<String, dynamic>);
         final idx = _fallbackStorage.indexWhere((v) => v.id == id);
         if (idx != -1) _fallbackStorage[idx] = updated;
+        await _saveToCache(_fallbackStorage);
         return updated;
       }
       throw ServerException(message: 'Failed to update visit status on server');

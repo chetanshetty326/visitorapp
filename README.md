@@ -143,10 +143,10 @@ The data layer uses `Dio` with configurable endpoints defined in `lib/core/const
 ### Configurable Base URL:
 ```dart
 // lib/core/constants/api_constants.dart
-class ApiConstants {
-  static String baseUrl = 'https://67...mockapi.io/api/v1'; // Set your MockAPI URL here
-  static const String visitorsEndpoint = '/visitors';
-}
+
+   baseUrl = 'https://6ae04efbbe3bc8fead96de47.mockapi.io/vistor'; // Set your MockAPI URL here
+  
+
 ```
 
 ### Out-of-the-Box Persistent Offline Fallback Store:
@@ -157,8 +157,8 @@ If an external mock URL is unreachable or not yet configured, the app automatica
 ## ⚙️ Setup and Execution Instructions
 
 ### Prerequisites
-- Flutter SDK `^3.24.x` or higher
-- Dart SDK `^3.5.x` or higher
+- Flutter SDK 3.24
+- Dart SDK   3.5
 - Android Studio / VS Code with Flutter extensions
 - Android device or emulator with Camera support
 
@@ -177,14 +177,7 @@ flutter test
 flutter run
 ```
 
-### Build Android APK
-```bash
-flutter build apk --release
-```
-The output APK is generated at:
-`build/app/outputs/flutter-apk/app-release.apk`
 
----
 
 ## 🧪 Automated Tests Suite
 
@@ -211,5 +204,6 @@ Included tests:
 ---
 
 ## ⚠️ Known Limitations & Scope Assumptions
+
 - **Single Visit Session per Registration:** As specified in the assignment brief, one visit session per visitor registration is supported. Repeat multi-day visit history management is out of scope.
-- **Camera Permissions in Emulators:** Testing camera QR scanning on an emulator requires setting the emulator camera to "VirtualScene" or using the provided **Manual ID Entry (Test Mode)** button in the scanner AppBar.
+

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visitorappointment/core/constants/api_constants.dart';
 import '../data/datasources/visitor_remote_data_source.dart';
 import '../data/repositories/visitor_repository_impl.dart';
@@ -19,6 +20,10 @@ final sl = GetIt.instance;
 Future<void> initDependencyInjection() async {
   // Initialize persisted API settings
   await ApiConstants.init();
+
+  // SharedPreferences
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 
   // External
   final dio = Dio(
@@ -45,7 +50,10 @@ Future<void> initDependencyInjection() async {
 
   // Data Sources
   sl.registerLazySingleton<VisitorRemoteDataSource>(
-    () => VisitorRemoteDataSourceImpl(dio: sl()),
+    () => VisitorRemoteDataSourceImpl(
+      dio: sl(),
+      sharedPreferences: sl(),
+    ),
   );
 
   // Repositories
