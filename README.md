@@ -144,7 +144,7 @@ The data layer uses `Dio` with configurable endpoints defined in `lib/core/const
 ```dart
 // lib/core/constants/api_constants.dart
 
-   baseUrl = 'https://6ae04efbbe3bc8fead96de47.mockapi.io/vistor'; // Set your MockAPI URL here
+   baseUrl = 'https://6ae04efbbe3bc8fead96de47.mockapi.io/vistor'; //  MockAPI URL here
   
 
 ```

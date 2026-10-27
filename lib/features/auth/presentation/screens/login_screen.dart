@@ -12,8 +12,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'security@sumadhura.com');
-  final _passwordController = TextEditingController(text: 'security123');
+  final _emailController = TextEditingController(text: 'visitor@demo.com');
+  final _passwordController = TextEditingController(text: 'demo@123');
   bool _obscurePassword = true;
   bool _isLoading = false;
 
@@ -146,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               return null;
                             },
                             decoration: const InputDecoration(
-                              hintText: 'e.g. security@sumadhura.com',
+                              hintText: 'e.g. visitor@demo.com',
                               prefixIcon: Icon(Icons.person_outline_rounded, size: 20),
                             ),
                           ),
@@ -230,8 +230,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: _isLoading
                                   ? null
                                   : () {
-                                      _emailController.text = 'security@sumadhura.com';
-                                      _passwordController.text = 'security123';
+                                      _emailController.text = 'visitor@demo.com';
+                                      _passwordController.text = 'demo@123';
                                       _performLogin();
                                     },
                               child: const Text('Quick Demo Login (1-Tap)'),
