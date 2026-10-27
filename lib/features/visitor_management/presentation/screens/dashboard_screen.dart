@@ -5,7 +5,6 @@ import '../../../../core/utils/date_formatter.dart';
 import '../bloc/visitor_bloc.dart';
 import '../bloc/visitor_event.dart';
 import '../bloc/visitor_state.dart';
-import '../widgets/api_settings_dialog.dart';
 import '../widgets/confirm_dialog.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/dashboard_stat_card.dart';
@@ -53,13 +52,6 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_ethernet_rounded),
-            tooltip: 'API Configuration',
-            onPressed: () {
-              ApiSettingsDialog.show(context);
-            },
-          ),
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             tooltip: 'Sync Data',
