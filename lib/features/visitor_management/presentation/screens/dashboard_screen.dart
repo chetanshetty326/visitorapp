@@ -35,7 +35,7 @@ class DashboardScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Sumadhura Estates',
+              'Dashboard',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,

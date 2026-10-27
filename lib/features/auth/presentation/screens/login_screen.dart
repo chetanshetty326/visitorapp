@@ -79,26 +79,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Title & Subtitle
                     const Text(
-                      'SUMADHURA',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                        color: AppTheme.primary,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    const Text(
                       'Security & Front-Desk Portal',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textPrimary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.primary,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     const Text(
                       'Sign in to manage site visitors, passes, and QR scans',
                       textAlign: TextAlign.center,
