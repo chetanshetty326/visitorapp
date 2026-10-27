@@ -34,17 +34,30 @@ class VisitorModel extends Visitor {
     final rawCheckOut = json['check_out_time'] ?? json['checkOutTime'];
     final checkOut = DateFormatter.parseIso(rawCheckOut?.toString());
 
+    // Ensure valid status
+    final rawStatus = json['status']?.toString() ?? AppConstants.statusRegistered;
+    final status = (rawStatus == AppConstants.statusCheckedIn ||
+            rawStatus == AppConstants.statusCheckedOut)
+        ? rawStatus
+        : AppConstants.statusRegistered;
+
+    // Ensure non-empty ID (MockAPI generates string/num ID, or fallback)
+    final rawId = json['id']?.toString().trim();
+    final id = (rawId != null && rawId.isNotEmpty)
+        ? rawId
+        : 'VIS_${DateTime.now().microsecondsSinceEpoch.toString().substring(8)}';
+
     return VisitorModel(
-      id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
+      id: id,
+      name: json['name']?.toString() ?? 'Visitor',
       mobile: json['mobile']?.toString() ?? '',
       email: json['email']?.toString(),
       visitorType: json['visitor_type']?.toString() ??
           json['visitorType']?.toString() ??
           AppConstants.typeCustomer,
       project: json['project']?.toString() ?? AppConstants.projectA,
-      purpose: json['purpose']?.toString() ?? '',
-      status: json['status']?.toString() ?? AppConstants.statusRegistered,
+      purpose: json['purpose']?.toString() ?? 'Visit',
+      status: status,
       createdAt: createdAt,
       checkInTime: checkIn,
       checkOutTime: checkOut,
