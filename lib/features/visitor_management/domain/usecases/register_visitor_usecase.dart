@@ -9,7 +9,7 @@ class RegisterVisitorUseCase {
   RegisterVisitorUseCase(this.repository);
 
   Future<Visitor> call(Visitor visitor) async {
-    // Validate required fields
+  
     if (visitor.name.trim().isEmpty) {
       throw ValidationException('Visitor name is required');
     }
@@ -20,7 +20,7 @@ class RegisterVisitorUseCase {
       throw ValidationException('Purpose of visit is required');
     }
 
-    // Default status must be Registered as per requirements
+    
     final visitorToSave = visitor.copyWith(
       status: AppConstants.statusRegistered,
       createdAt: DateTime.now(),

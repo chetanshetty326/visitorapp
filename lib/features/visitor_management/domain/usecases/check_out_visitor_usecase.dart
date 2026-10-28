@@ -9,7 +9,7 @@ class CheckOutVisitorUseCase {
   CheckOutVisitorUseCase(this.repository);
 
   Future<Visitor> call(String id) async {
-    // Retrieve visitor to verify state and enforce business rules
+    
     final visitor = await repository.getVisitorById(id);
 
     if (visitor.status == AppConstants.statusRegistered) {

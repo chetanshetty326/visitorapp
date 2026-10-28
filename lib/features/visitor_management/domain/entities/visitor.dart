@@ -5,10 +5,10 @@ class Visitor extends Equatable {
   final String name;
   final String mobile;
   final String? email;
-  final String visitorType; // Customer, Vendor, Other
-  final String project;     // Project A, Project B, Project C
+  final String visitorType; 
+  final String project;    
   final String purpose;
-  final String status;      // Registered, Checked In, Checked Out
+  final String status;      
   final DateTime createdAt;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;

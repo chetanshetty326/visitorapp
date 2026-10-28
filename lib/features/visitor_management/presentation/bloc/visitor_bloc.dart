@@ -50,7 +50,7 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
       final visitors = await getVisitorsUseCase();
       final stats = getDashboardStatsUseCase(visitors);
 
-      // Retain existing filters if already in LoadedState
+     
       String searchQuery = '';
       String? selectedProject;
       String? selectedStatus;
