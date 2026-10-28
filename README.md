@@ -164,16 +164,9 @@ If the remote API is unreachable or the device loses internet connectivity, the 
 
 ### Run the App
 ```bash
-# 1. Fetch dependencies
 flutter pub get
-
-# 2. Run static analyzer (verify 0 issues)
 flutter analyze
-
-# 3. Run automated tests (all 10 tests pass)
 flutter test
-
-# 4. Launch the application
 flutter run
 ```
 
@@ -194,17 +187,11 @@ Included tests:
   - Disallow check-out before checking in.
   - Check-out allowed when status is `Checked In`.
   - Local-date dashboard statistics calculation verification.
-- **`validators_test.dart`**:
-  - Required field validator.
-  - 10-digit numeric mobile number validator.
-  - RFC standard email format validator.
-- **`widget_test.dart`**:
-  - StatusChip widget rendering and badge styling test.
+
 
 ---
 
 ## ⚠️ Scope Assumptions & Future Enhancements
 
 - **Single Visit Session per Registration:** One visit session per visitor registration is supported. Multi-day repeat visit logs can be integrated in future releases.
-- **Camera Scanning in Emulators:** For camera QR scanning on an emulator, configure the camera in emulator settings to "VirtualScene" or use a physical device.
 
