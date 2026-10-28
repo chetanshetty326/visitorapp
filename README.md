@@ -143,14 +143,14 @@ The data layer uses `Dio` with configurable endpoints defined in `lib/core/const
 ### Configurable Base URL:
 ```dart
 // lib/core/constants/api_constants.dart
-
-   baseUrl = 'https://6ae04efbbe3bc8fead96de47.mockapi.io/vistor'; //  MockAPI URL here
-  
-
+class ApiConstants {
+  static const String baseUrl = 'https://6ae04efbbe3bc8fead96de47.mockapi.io';
+  static const String visitorsEndpoint = '/vistor';
+}
 ```
 
-### Out-of-the-Box Persistent Offline Fallback Store:
-If an external mock URL is unreachable or not yet configured, the app automatically runs an in-memory persistent store pre-seeded with realistic records. This guarantees that **evaluators can test the app immediately without broken network dependencies or crashes**.
+### Persistent Offline Fallback Store:
+If the remote API is unreachable or the device loses internet connectivity, the app automatically switches to a local cache backed by `SharedPreferences`. This ensures seamless operation without crashes or downtime in low-connectivity environments.
 
 ---
 
@@ -158,7 +158,7 @@ If an external mock URL is unreachable or not yet configured, the app automatica
 
 ### Prerequisites
 - Flutter SDK 3.24
-- Dart SDK   3.5
+- Dart SDK 3.5
 - Android Studio / VS Code with Flutter extensions
 - Android device or emulator with Camera support
 
@@ -177,7 +177,7 @@ flutter test
 flutter run
 ```
 
-
+---
 
 ## 🧪 Automated Tests Suite
 
@@ -203,7 +203,8 @@ Included tests:
 
 ---
 
-## ⚠️ Known Limitations & Scope Assumptions
+## ⚠️ Scope Assumptions & Future Enhancements
 
-- **Single Visit Session per Registration:** As specified in the assignment brief, one visit session per visitor registration is supported. Repeat multi-day visit history management is out of scope.
+- **Single Visit Session per Registration:** One visit session per visitor registration is supported. Multi-day repeat visit logs can be integrated in future releases.
+- **Camera Scanning in Emulators:** For camera QR scanning on an emulator, configure the camera in emulator settings to "VirtualScene" or use a physical device.
 
