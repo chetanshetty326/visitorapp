@@ -1,4 +1,4 @@
-# Visitor Management Mobile Application (Sumadhura)
+# Visitor Management Mobile Application 
 
 A modern, responsive, and user-friendly Visitor Management mobile application developed with **Flutter** and **Dart**, strictly adhering to **Clean Architecture**, **BLoC (Business Logic Component)** state management, and **Domain-Driven Use Cases**.
 
